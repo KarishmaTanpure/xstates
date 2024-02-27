@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+.dropdowns-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dropdown-item {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.dropdown-item:last-child {
+  margin-right: 0;
+}
+
+.dropdown {
+  transition: filter 0.3s ease-in-out;
+}
+
+.dropdown.blurred {
+  filter: blur(4px); 
+}
