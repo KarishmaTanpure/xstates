@@ -10,36 +10,37 @@ function App() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   
-
-  
+  // Fetch countries on initial render
   useEffect(() => {
     axios.get(`https://crio-location-selector.onrender.com/countries`)
       .then((res) => {
-      console.log(res.data); 
-      setCountries(res.data);
-  })
+        setCountries(res.data);
+      })
       .catch(err => console.error("Error fetching countries:", err));
   }, []);
 
+  // Fetch states when selectedCountry changes
   useEffect(() => {
     if (selectedCountry) {
       axios.get(`https://crio-location-selector.onrender.com/country=${selectedCountry}/states`)
-        .then((res) => {setStates(res.data);
-        setSelectedState("");
-        setCities([]);
-        setSelectedCity("");
-    })
+        .then((res) => {
+          setStates(res.data);
+          setSelectedState("");
+          setCities([]);
+          setSelectedCity("");
+        })
         .catch((err) => console.error("Error fetching states:", err));
     }
   }, [selectedCountry]);
 
+  // Fetch cities when selectedState changes
   useEffect(() => {
     if (selectedCountry && selectedState) {
       axios.get(`https://crio-location-selector.onrender.com/country=${selectedCountry}/state=${selectedState}/cities`)
         .then((res) => { 
-        setCities(res.data);
-         setSelectedCity("");
-    })
+          setCities(res.data);
+          setSelectedCity("");
+        })
         .catch((err) => console.error("Error fetching cities:", err));
     }
   }, [selectedCountry, selectedState]);
@@ -76,50 +77,38 @@ function App() {
             ))}
           </select>
         </div>
-        {selectedCountry && (
-          <div className="dropdown-item">
-            <select value={selectedState} 
-            onChange={handleStateChange} className='dropdown'
-            disabled={!selectedCountry}
-           >
-              <option value="" disabled={!selectedCountry}>Select State</option>
-              {states.map((state) => (
-                <option key={state} value={state}>
-                  {state}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {selectedState && (
-          <div className="dropdown-item">
-            <select value={selectedCity} 
-            onChange={handleCityChange} className='dropdown'
-           disabled={!selectedCountry || !selectedState}
-           >
-              <option value="" disabled={!selectedState}>Select City</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        <div className="dropdown-item">
+          <select value={selectedState} onChange={handleStateChange} className='dropdown'>
+            <option value="" disabled>Select State</option>
+            {states.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="dropdown-item">
+          <select value={selectedCity} onChange={handleCityChange} className='dropdown'>
+            <option value="" disabled>Select City</option>
+            {cities.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
-      
-        {selectedCity && (
-          <h2 className="result">
+      {selectedCity && (
+        <h2 className="result">
           You selected <span className='highlight'>{selectedCity},</span>
           <span className='fade'>
             {" "}
             {selectedState}, {selectedCountry}
-            </span>
-            </h2>
-        )}
-      </div>
-    
-  );
+          </span>
+        </h2>
+      )}
+    </div>
+  );  
 }
 
 export default App;
